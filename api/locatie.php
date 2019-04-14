@@ -75,7 +75,7 @@ switch ( $method ) {
 				http_response_code( 404 );
 
 				echo json_encode(
-					array( 'message' => 'Geen locatie gevonden' )
+					array( 'message' => 'Geen locaties gevonden' )
 				);
 			}
 		}
@@ -112,7 +112,7 @@ switch ( $method ) {
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
-		$locatie->id = $data->id;
+		$locatie->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 		$locatie->locatieNaam = $data->locatieNaam;
 		$locatie->locatieStraat = $data->locatieStraat;
 		$locatie->locatiePostcode = $data->locatiePostcode;
@@ -135,9 +135,7 @@ switch ( $method ) {
 	case 'DELETE':
 		$locatie = new Locatie( $db );
 
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$locatie->id = $data->id;
+		$locatie->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 
 		if ( $locatie->delete() ) {
 			http_response_code( 200 );

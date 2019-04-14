@@ -30,8 +30,8 @@ switch ( $method ) {
 					"ticketKlant" => $ticket->ticketKlant,
 					"ticketDatum" => $ticket->ticketDatum,
 					"ticketTijd" => $ticket->ticketTijd,
-					"ticketDuur" => $ticket->ticketDuur,
-					"ticketLocatie" => $ticket->ticketLocatie
+					"ticketZaal" => $ticket->ticketZaal,
+					"ticketPrijs" => $ticket->ticketPrijs
 				);
 
 				http_response_code( 200 );
@@ -65,8 +65,8 @@ switch ( $method ) {
 						"ticketKlant" => $ticketKlant,
 						"ticketDatum" => $ticketDatum,
 						"ticketTijd" => $ticketTijd,
-						"ticketDuur" => $ticketDuur,
-						"ticketLocatie" => $ticketLocatie
+						"ticketZaal" => $ticketZaal,
+						"ticketPrijs" => $ticketPrijs
 					);
 
 					array_push( $tickets_arr[ "records" ], $ticket_item );
@@ -96,8 +96,8 @@ switch ( $method ) {
 		$ticket->ticketKlant = $data->ticketKlant;
 		$ticket->ticketDatum = $data->ticketDatum;
 		$ticket->ticketTijd = $data->ticketTijd;
-		$ticket->ticketDuur = $data->ticketDuur;
-		$ticket->ticketLocatie = $data->ticketLocatie;
+		$ticket->ticketZaal = $data->ticketZaal;
+		$ticket->ticketPrijs = $data->ticketPrijs;
 
 		if ( $ticket->create() ) {
 			echo json_encode(
@@ -117,13 +117,13 @@ switch ( $method ) {
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
-		$ticket->id = $data->id;
+		$ticket->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 		$ticket->ticketNummer = $data->ticketNummer;
 		$ticket->ticketKlant = $data->ticketKlant;
 		$ticket->ticketDatum = $data->ticketDatum;
 		$ticket->ticketTijd = $data->ticketTijd;
-		$ticket->ticketDuur = $data->ticketDuur;
-		$ticket->ticketLocatie = $data->ticketLocatie;
+		$ticket->ticketZaal = $data->ticketZaal;
+		$ticket->ticketPrijs = $data->ticketPrijs;
 
 		if ( $ticket->update() ) {
 			http_response_code( 200 );
@@ -140,11 +140,9 @@ switch ( $method ) {
 		break;
 
 	case 'DELETE':
-		$ticket = new ticket( $db );
+		$ticket = new Ticket( $db );
 
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$ticket->id = $data->id;
+		$ticket->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 
 		if ( $ticket->delete() ) {
 			http_response_code( 200 );

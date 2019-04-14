@@ -73,14 +73,6 @@ class Voorstelling {
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
-		//Clean data
-		$this->voorstellingNummer = htmlspecialchars(strip_tags($this->voorstellingNummer));
-		$this->voorstellingTickets = htmlspecialchars(strip_tags($this->voorstellingTickets));
-		$this->voorstellingZaal = htmlspecialchars(strip_tags($this->voorstellingZaal));
-		$this->voorstellingFilm = htmlspecialchars(strip_tags($this->voorstellingFilm));
-		$this->voorstellingDuur = htmlspecialchars(strip_tags($this->voorstellingDuur));
-		$this->voorstellingLocatie = htmlspecialchars(strip_tags($this->voorstellingLocatie));
-		
 		//bind data
 		$stmt->bindParam(':voorstellingNummer', $this->voorstellingNummer);
 		$stmt->bindParam(':voorstellingTickets', $this->voorstellingTickets);
@@ -113,16 +105,6 @@ class Voorstelling {
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
-		//Clean data
-		$this->voorstellingNummer = htmlspecialchars(strip_tags($this->voorstellingNummer));
-		$this->voorstellingTickets = htmlspecialchars(strip_tags($this->voorstellingTickets));
-		$this->voorstellingZaal = htmlspecialchars(strip_tags($this->voorstellingZaal));
-		$this->voorstellingFilm = htmlspecialchars(strip_tags($this->voorstellingFilm));
-		$this->voorstellingDuur = htmlspecialchars(strip_tags($this->voorstellingDuur));
-		$this->voorstellingLocatie = htmlspecialchars(strip_tags($this->voorstellingLocatie));
-		$this->id = htmlspecialchars(strip_tags($this->id));
-		
-		
 		
 		//bind data
 				$stmt->bindParam(':voorstellingNummer', $this->voorstellingNummer);
@@ -148,9 +130,6 @@ class Voorstelling {
 			
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
-		
-		//clean data
-		$this->id = htmlspecialchars(strip_tags($this->id));
 		
 		//bind data
 		$stmt->bindParam(':id', $this->id);

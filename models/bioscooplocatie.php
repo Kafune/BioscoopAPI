@@ -67,13 +67,6 @@ class Locatie {
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
-		//Clean data
-		$this->locatieNaam = htmlspecialchars(strip_tags($this->locatieNaam));
-		$this->locatieStraat = htmlspecialchars(strip_tags($this->locatieStraat));
-		$this->locatiePostcode = htmlspecialchars(strip_tags($this->locatiePostcode));
-		$this->locatieProvincie = htmlspecialchars(strip_tags($this->locatieProvincie));
-
-		
 		//bind data
 		$stmt->bindParam(':locatieNaam', $this->locatieNaam);
 		$stmt->bindParam(':locatieStraat', $this->locatieStraat);
@@ -102,14 +95,6 @@ class Locatie {
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
-		//Clean data
-		$this->locatieNaam = htmlspecialchars(strip_tags($this->locatieNaam));
-		$this->locatieStraat = htmlspecialchars(strip_tags($this->locatieStraat));
-		$this->locatiePostcode = htmlspecialchars(strip_tags($this->locatiePostcode));
-		$this->locatieProvincie = htmlspecialchars(strip_tags($this->locatieProvincie));
-		$this->id = htmlspecialchars(strip_tags($this->id));
-		
-		
 		
 		//bind data
 		$stmt->bindParam(':locatieNaam', $this->locatieNaam);
@@ -133,9 +118,6 @@ class Locatie {
 			
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
-		
-		//clean data
-		$this->id = htmlspecialchars(strip_tags($this->id));
 		
 		//bind data
 		$stmt->bindParam(':id', $this->id);

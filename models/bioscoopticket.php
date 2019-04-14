@@ -73,14 +73,6 @@ class Ticket {
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
-		//Clean data
-		$this->ticketNummer = htmlspecialchars(strip_tags($this->ticketNummer));
-		$this->ticketKlant = htmlspecialchars(strip_tags($this->ticketKlant));
-		$this->ticketDatum = htmlspecialchars(strip_tags($this->ticketDatum));
-		$this->ticketTijd = htmlspecialchars(strip_tags($this->ticketTijd));
-		$this->ticketZaal = htmlspecialchars(strip_tags($this->ticketZaal));
-		$this->ticketPrijs = htmlspecialchars(strip_tags($this->ticketPrijs));
-		
 		//bind data
 		$stmt->bindParam(':ticketNummer', $this->ticketNummer);
 		$stmt->bindParam(':ticketKlant', $this->ticketKlant);
@@ -113,17 +105,6 @@ class Ticket {
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
-		//Clean data
-		$this->ticketNummer = htmlspecialchars(strip_tags($this->ticketNummer));
-		$this->ticketKlant = htmlspecialchars(strip_tags($this->ticketKlant));
-		$this->ticketDatum = htmlspecialchars(strip_tags($this->ticketDatum));
-		$this->ticketTijd = htmlspecialchars(strip_tags($this->ticketTijd));
-		$this->ticketZaal = htmlspecialchars(strip_tags($this->ticketZaal));
-		$this->ticketPrijs = htmlspecialchars(strip_tags($this->ticketPrijs));
-		$this->id = htmlspecialchars(strip_tags($this->id));
-		
-		
-		
 		//bind data
 		$stmt->bindParam(':ticketNummer', $this->ticketNummer);
 		$stmt->bindParam(':ticketKlant', $this->ticketKlant);
@@ -148,9 +129,6 @@ class Ticket {
 			
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
-		
-		//clean data
-		$this->id = htmlspecialchars(strip_tags($this->id));
 		
 		//bind data
 		$stmt->bindParam(':id', $this->id);

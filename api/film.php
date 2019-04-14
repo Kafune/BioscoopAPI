@@ -29,7 +29,6 @@ switch ( $method ) {
 					"filmNaam" => $film->filmNaam,
 					"filmTijd" => $film->filmTijd,
 					"filmPrijs" => $film->filmPrijs,
-					"filmDuur" => $film->filmDuur,
 					"filmType" => $film->filmType
 				);
 
@@ -63,7 +62,6 @@ switch ( $method ) {
 						"filmNaam" => $filmNaam,
 						"filmTijd" => $filmTijd,
 						"filmPrijs" => $filmPrijs,
-						"filmDuur" => $filmDuur,
 						"filmType" => $filmType
 					);
 
@@ -77,7 +75,7 @@ switch ( $method ) {
 				http_response_code( 404 );
 
 				echo json_encode(
-					array( 'message' => 'Geen Films gevonden' )
+					array( 'message' => 'Geen films gevonden' )
 				);
 			}
 		}
@@ -94,7 +92,6 @@ switch ( $method ) {
 		$film->filmNaam = $data->filmNaam;
 		$film->filmTijd = $data->filmTijd;
 		$film->filmPrijs = $data->filmPrijs;
-		$film->filmDuur = $data->filmDuur;
 		$film->filmType = $data->filmType;
 
 		if ( $film->create() ) {
@@ -115,11 +112,10 @@ switch ( $method ) {
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
-		$film->id = $data->id;
+		$film->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 		$film->filmNaam = $data->filmNaam;
 		$film->filmTijd = $data->filmTijd;
 		$film->filmPrijs = $data->filmPrijs;
-		$film->filmDuur = $data->filmDuur;
 		$film->filmType = $data->filmType;
 
 		if ( $film->update() ) {
@@ -139,10 +135,8 @@ switch ( $method ) {
 	case 'DELETE':
 		$film = new Film( $db );
 
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$film->id = $data->id;
-
+		$film->id = isset($_GET['id']) ? $_GET['id'] : die();
+ 
 		if ( $film->delete() ) {
 			http_response_code( 200 );
 

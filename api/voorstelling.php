@@ -114,10 +114,12 @@ switch ( $method ) {
 
 	case 'PUT':
 		$voorstelling = new Voorstelling( $db );
+		
+		
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
-		$voorstelling->id = $data->id;
+		$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 		$voorstelling->voorstellingNummer = $data->voorstellingNummer;
 		$voorstelling->voorstellingTickets = $data->voorstellingTickets;
 		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
@@ -128,7 +130,7 @@ switch ( $method ) {
 		if ( $voorstelling->update() ) {
 			http_response_code( 200 );
 
-			echo json_encode( array( 'message' => 'Voorstelling geupdate.' ) );
+			echo json_encode( array( 'message' => 'Voorstelling geupdated.' ) );
 		} else {
 			http_response_code( 503 );
 
@@ -142,9 +144,7 @@ switch ( $method ) {
 	case 'DELETE':
 		$voorstelling = new Voorstelling( $db );
 
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$voorstelling->id = $data->id;
+		$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 
 		if ( $voorstelling->delete() ) {
 			http_response_code( 200 );

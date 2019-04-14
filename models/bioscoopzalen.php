@@ -1,15 +1,15 @@
 <?php
-class Film {
+class Zalen {
     //DB stuff
     private $conn;
-    private $table = 'bioscoopfilm';
+    private $table = 'bioscoopzalen';
 
     //Film Properties
     public $id;
-    public $filmNaam;
-    public $filmTijd;
-    public $filmPrijs;
-    public $filmType;
+    public $zaalNummer;
+    public $zaalAantalStoelen;
+    public $zaalAantalRijen;
+    public $zaalBeeld;
 
     //constructor with DB
     public function __construct($db) {
@@ -49,30 +49,30 @@ class Film {
 
         //Set properties
         $this->id = $row['id'];
-        $this->filmNaam = $row['filmNaam'];
-        $this->filmTijd = $row['filmTijd'];
-        $this->filmPrijs = $row['filmPrijs'];
-        $this->filmType = $row['filmType'];
+        $this->zaalNummer = $row['zaalNummer'];
+        $this->zaalAantalStoelen = $row['zaalAantalStoelen'];
+        $this->zaalAantalRijen = $row['zaalAantalRijen'];
+        $this->zaalBeeld = $row['zaalBeeld'];
 
     }
 	
 	//create film
 	public function create() {
 		$query = 'INSERT INTO '.$this->table.' SET 
-		filmNaam = :filmNaam,
-		filmTijd = :filmTijd,
-		filmPrijs = :filmPrijs,
-		filmType = :filmType';
+		zaalNummer = :zaalNummer,
+		zaalAantalStoelen = :zaalAantalStoelen,
+		zaalAantalRijen = :zaalAantalRijen,
+		zaalBeeld = :zaalBeeld';
 		
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
 		
 		//bind data
-		$stmt->bindParam(':filmNaam', $this->filmNaam);
-		$stmt->bindParam(':filmTijd', $this->filmTijd);
-		$stmt->bindParam(':filmPrijs', $this->filmPrijs);
-		$stmt->bindParam(':filmType', $this->filmType);
-		
+		$stmt->bindParam(':zaalNummer', $this->zaalNummer);
+		$stmt->bindParam(':zaalAantalStoelen', $this->zaalAantalStoelen);
+		$stmt->bindParam(':zaalAantalRijen', $this->zaalAantalRijen);
+		$stmt->bindParam(':zaalBeeld', $this->zaalBeeld);
+
 		//execute query
 		if($stmt->execute()) {
 			return true;
@@ -85,22 +85,22 @@ class Film {
 	//update film
 	public function update() {
 		$query = 'UPDATE '.$this->table.' SET 
-		filmNaam = :filmNaam,
-		filmTijd = :filmTijd,
-		filmPrijs = :filmPrijs,
-		filmType = :filmType
+		zaalNummer = :zaalNummer,
+		zaalAantalStoelen = :zaalAantalStoelen,
+		zaalAantalRijen = :zaalAantalRijen,
+		zaalBeeld = :zaalBeeld
 		WHERE
 		 id = :id';
 		
 		//prepare statement
-		$stmt = $this->conn->prepare($query);	
+		$stmt = $this->conn->prepare($query);
 		
 		
 		//bind data
-		$stmt->bindParam(':filmNaam', $this->filmNaam);
-		$stmt->bindParam(':filmTijd', $this->filmTijd);
-		$stmt->bindParam(':filmPrijs', $this->filmPrijs);
-		$stmt->bindParam(':filmType', $this->filmType);
+				$stmt->bindParam(':zaalNummer', $this->zaalNummer);
+		$stmt->bindParam(':zaalAantalStoelen', $this->zaalAantalStoelen);
+		$stmt->bindParam(':zaalAantalRijen', $this->zaalAantalRijen);
+		$stmt->bindParam(':zaalBeeld', $this->zaalBeeld);
 		$stmt->bindParam(':id', $this->id);
 		
 		//execute query

@@ -7,7 +7,7 @@ class Bioscoop {
     //bioscoop Properties
     public $id;
     public $bioscoopLocatie;
-    public $bioscoopZalen;
+    public $bioscoopZaal;
     public $bioscoopTickets;
     public $bioscoopVoorstelling;
 
@@ -50,7 +50,7 @@ class Bioscoop {
         //Set properties
         $this->id = $row['id'];
         $this->bioscoopLocatie = $row['bioscoopLocatie'];
-        $this->bioscoopZalen = $row['bioscoopZalen'];
+        $this->bioscoopZaal = $row['bioscoopZaal'];
         $this->bioscoopTickets = $row['bioscoopTickets'];
         $this->bioscoopVoorstelling = $row['bioscoopVoorstelling'];
 
@@ -60,7 +60,7 @@ class Bioscoop {
 	public function create() {
 		$query = 'INSERT INTO '.$this->table.' SET 
 		bioscoopLocatie = :bioscoopLocatie,
-		bioscoopZalen = :bioscoopZalen,
+		bioscoopZaal = :bioscoopZaal,
 		bioscoopTickets = :bioscoopTickets,
 		bioscoopVoorstelling = :bioscoopVoorstelling';
 		
@@ -70,7 +70,7 @@ class Bioscoop {
 		
 		//bind data
 		$stmt->bindParam(':bioscoopLocatie', $this->bioscoopLocatie);
-		$stmt->bindParam(':bioscoopZalen', $this->bioscoopZalen);
+		$stmt->bindParam(':bioscoopZaal', $this->bioscoopZaal);
 		$stmt->bindParam(':bioscoopTickets', $this->bioscoopTickets);
 		$stmt->bindParam(':bioscoopVoorstelling', $this->bioscoopVoorstelling);
 		
@@ -87,7 +87,7 @@ class Bioscoop {
 	public function update() {
 		$query = 'UPDATE '.$this->table.' SET 
 		bioscoopLocatie = :bioscoopLocatie,
-		bioscoopZalen = :bioscoopZalen,
+		bioscoopZaal = :bioscoopZaal,
 		bioscoopTickets = :bioscoopTickets,
 		bioscoopVoorstelling = :bioscoopVoorstelling
 		WHERE
@@ -99,7 +99,7 @@ class Bioscoop {
 		
 		//bind data
 		$stmt->bindParam(':bioscoopLocatie', $this->bioscoopLocatie);
-		$stmt->bindParam(':bioscoopZalen', $this->bioscoopZalen);
+		$stmt->bindParam(':bioscoopZaal', $this->bioscoopZaal);
 		$stmt->bindParam(':bioscoopTickets', $this->bioscoopTickets);
 		$stmt->bindParam(':bioscoopVoorstelling', $this->bioscoopVoorstelling);
 		$stmt->bindParam(':id', $this->id);

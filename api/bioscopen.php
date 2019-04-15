@@ -23,7 +23,7 @@ switch ( $method ) {
 
 			if ( $bioscoop->id != null) {
 
-				$bioscoops_arr = array(
+				$bioscopen_arr = array(
 					"id" => $bioscoop->id,
 					"bioscoopLocatie" => $bioscoop->bioscoopLocatie,
 					"bioscoopFilm" => $bioscoop->bioscoopFilm,
@@ -33,7 +33,7 @@ switch ( $method ) {
 
 				http_response_code( 200 );
 
-				echo json_encode( $bioscoops_arr );
+				echo json_encode( $bioscopen_arr );
 			} else {
 				http_response_code( 404 );
 
@@ -49,8 +49,8 @@ switch ( $method ) {
 
 			if ( $num > 0 ) {
 
-				$bioscoops_arr = array();
-				$bioscoops_arr[ "records" ] = array();
+				$bioscopen_arr = array();
+				$bioscopen_arr[ "records" ] = array();
 
 				while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
 
@@ -65,12 +65,12 @@ switch ( $method ) {
 						"bioscoopVoorstelling" => $bioscoopVoorstelling
 					);
 
-					array_push( $bioscoops_arr[ "records" ], $bioscoop_item );
+					array_push( $bioscopen_arr[ "records" ], $bioscoop_item );
 				}
 
 				http_response_code( 200 );
 
-				echo json_encode( $bioscoops_arr );
+				echo json_encode( $bioscopen_arr );
 			} else {
 				http_response_code( 404 );
 
@@ -84,7 +84,7 @@ switch ( $method ) {
 
 
 	case 'POST':
-		$bioscoop = new bioscoop( $db );
+		$bioscoop = new Bioscoop( $db );
 		
 		$data = json_decode( file_get_contents( "php://input" ) );
 
@@ -108,7 +108,7 @@ switch ( $method ) {
 
 
 	case 'PUT':
-		$bioscoop = new bioscoop( $db );
+		$bioscoop = new Bioscoop( $db );
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
@@ -127,14 +127,14 @@ switch ( $method ) {
 			http_response_code( 503 );
 
 			echo json_encode(
-				array( 'message' => 'Bioscoop kan niet geupdate worden.' )
+				array( 'message' => 'Bioscoop kan niet gevonden/geupdate worden.' )
 			);
 		}
 
 		break;
 
 	case 'DELETE':
-		$bioscoop = new bioscoop( $db );
+		$bioscoop = new Bioscoop( $db );
 
 		$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 

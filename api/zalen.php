@@ -16,7 +16,7 @@ $method = $_SERVER[ 'REQUEST_METHOD' ];
 switch ( $method ) {
 	case 'GET':
 		if ( !empty( $_GET[ "id" ] ) ) {
-			$zaal = new Zalen( $db );
+			$zaal = new Zaal( $db );
 
 			$zaal->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 
@@ -43,7 +43,7 @@ switch ( $method ) {
 				);
 			}
 		} else {
-			$zaal = new Zalen( $db );
+			$zaal = new Zaal( $db );
 
 			$stmt = $zaal->read();
 			$num = $stmt->rowCount();
@@ -84,7 +84,7 @@ switch ( $method ) {
 
 
 	case 'POST':
-		$zaal = new Zalen( $db );
+		$zaal = new Zaal( $db );
 		
 		$data = json_decode( file_get_contents( "php://input" ) );
 
@@ -107,7 +107,7 @@ switch ( $method ) {
 
 
 	case 'PUT':
-		$zaal = new Zalen( $db );
+		$zaal = new Zaal( $db );
 		
 		
 
@@ -134,7 +134,7 @@ switch ( $method ) {
 		break;
 
 	case 'DELETE':
-		$zaal = new Zalen( $db );
+		$zaal = new Zaal( $db );
 
 		$zaal->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 

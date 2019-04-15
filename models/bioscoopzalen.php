@@ -1,5 +1,5 @@
 <?php
-class Zalen {
+class Zaal {
     //DB stuff
     private $conn;
     private $table = 'bioscoopzalen';

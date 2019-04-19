@@ -26,10 +26,8 @@ switch ( $method ) {
 				$bioscopen_arr = array(
 					"id" => $bioscoop->id,
 					"bioscoopLocatie" => $bioscoop->bioscoopLocatie,
-					"bioscoopFilm" => $bioscoop->bioscoopFilm,
 					"bioscoopZaal" => $bioscoop->bioscoopZaal,
-					"bioscoopTickets" => $bioscoop->bioscoopTickets,
-					"bioscoopVoorstelling" => $bioscoop->bioscoopVoorstelling				);
+					"bioscoopAantalPersoneel" => $bioscoop->bioscoopAantalPersoneel				);
 
 				http_response_code( 200 );
 
@@ -59,10 +57,8 @@ switch ( $method ) {
 					$bioscoop_item = array(
 						"id" => $id,
 						"bioscoopLocatie" => $bioscoopLocatie,
-						"bioscoopFilm" => $bioscoopFilm,
 						"bioscoopZaal" => $bioscoopZaal,
-						"bioscoopTickets" => $bioscoopTickets,
-						"bioscoopVoorstelling" => $bioscoopVoorstelling
+						"bioscoopAantalPersoneel" => $bioscoopAantalPersoneel
 					);
 
 					array_push( $bioscopen_arr[ "records" ], $bioscoop_item );
@@ -89,10 +85,8 @@ switch ( $method ) {
 		$data = json_decode( file_get_contents( "php://input" ) );
 
 		$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
-		$bioscoop->bioscoopFilm = $data->bioscoopFilm;
 		$bioscoop->bioscoopZaal = $data->bioscoopZaal;
-		$bioscoop->bioscoopTickets = $data->bioscoopTickets;
-		$bioscoop->bioscoopVoorstelling = $data->bioscoopVoorstelling;
+		$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
 
 		if ( $bioscoop->create() ) {
 			echo json_encode(
@@ -114,10 +108,8 @@ switch ( $method ) {
 
 		$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 		$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
-		$bioscoop->bioscoopFilm = $data->bioscoopFilm;
 		$bioscoop->bioscoopZaal = $data->bioscoopZaal;
-		$bioscoop->bioscoopTickets = $data->bioscoopTickets;
-		$bioscoop->bioscoopVoorstelling = $data->bioscoopVoorstelling;
+		$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
 
 		if ( $bioscoop->update() ) {
 			http_response_code( 200 );

@@ -8,8 +8,7 @@ class Bioscoop {
     public $id;
     public $bioscoopLocatie;
     public $bioscoopZaal;
-    public $bioscoopTickets;
-    public $bioscoopVoorstelling;
+    public $bioscoopAantalPersoneel;
 
     //constructor with DB
     public function __construct($db) {
@@ -51,8 +50,7 @@ class Bioscoop {
         $this->id = $row['id'];
         $this->bioscoopLocatie = $row['bioscoopLocatie'];
         $this->bioscoopZaal = $row['bioscoopZaal'];
-        $this->bioscoopTickets = $row['bioscoopTickets'];
-        $this->bioscoopVoorstelling = $row['bioscoopVoorstelling'];
+        $this->bioscoopAantalPersoneel = $row['bioscoopAantalPersoneel'];
 
     }
 	
@@ -61,8 +59,7 @@ class Bioscoop {
 		$query = 'INSERT INTO '.$this->table.' SET 
 		bioscoopLocatie = :bioscoopLocatie,
 		bioscoopZaal = :bioscoopZaal,
-		bioscoopTickets = :bioscoopTickets,
-		bioscoopVoorstelling = :bioscoopVoorstelling';
+		bioscoopAantalPersoneel = :bioscoopAantalPersoneel';
 		
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
@@ -71,8 +68,7 @@ class Bioscoop {
 		//bind data
 		$stmt->bindParam(':bioscoopLocatie', $this->bioscoopLocatie);
 		$stmt->bindParam(':bioscoopZaal', $this->bioscoopZaal);
-		$stmt->bindParam(':bioscoopTickets', $this->bioscoopTickets);
-		$stmt->bindParam(':bioscoopVoorstelling', $this->bioscoopVoorstelling);
+		$stmt->bindParam(':bioscoopAantalPersoneel', $this->bioscoopAantalPersoneel);
 		
 		//execute query
 		if($stmt->execute()) {
@@ -88,8 +84,7 @@ class Bioscoop {
 		$query = 'UPDATE '.$this->table.' SET 
 		bioscoopLocatie = :bioscoopLocatie,
 		bioscoopZaal = :bioscoopZaal,
-		bioscoopTickets = :bioscoopTickets,
-		bioscoopVoorstelling = :bioscoopVoorstelling
+		bioscoopAantalPersoneel = :bioscoopAantalPersoneel
 		WHERE
 		 id = :id';
 		
@@ -100,8 +95,7 @@ class Bioscoop {
 		//bind data
 		$stmt->bindParam(':bioscoopLocatie', $this->bioscoopLocatie);
 		$stmt->bindParam(':bioscoopZaal', $this->bioscoopZaal);
-		$stmt->bindParam(':bioscoopTickets', $this->bioscoopTickets);
-		$stmt->bindParam(':bioscoopVoorstelling', $this->bioscoopVoorstelling);
+		$stmt->bindParam(':bioscoopAantalPersoneel', $this->bioscoopAantalPersoneel);
 		$stmt->bindParam(':id', $this->id);
 		
 		//execute query

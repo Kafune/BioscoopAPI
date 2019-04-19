@@ -30,8 +30,7 @@ switch ( $method ) {
 					"voorstellingTickets" => $voorstelling->voorstellingTickets,
 					"voorstellingZaal" => $voorstelling->voorstellingZaal,
 					"voorstellingFilm" => $voorstelling->voorstellingFilm,
-					"voorstellingDuur" => $voorstelling->voorstellingDuur,
-					"voorstellingLocatie" => $voorstelling->voorstellingLocatie
+					"voorstellingDuur" => $voorstelling->voorstellingDuur
 				);
 
 				http_response_code( 200 );
@@ -65,9 +64,7 @@ switch ( $method ) {
 						"voorstellingTickets" => $voorstellingTickets,
 						"voorstellingZaal" => $voorstellingZaal,
 						"voorstellingFilm" => $voorstellingFilm,
-						"voorstellingDuur" => $voorstellingDuur,
-						"voorstellingLocatie" => $voorstellingLocatie
-					);
+						"voorstellingDuur" => $voorstellingDuur					);
 
 					array_push( $voorstellingen_arr[ "records" ], $voorstelling_item );
 				}
@@ -97,7 +94,6 @@ switch ( $method ) {
 		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
 		$voorstelling->voorstellingFilm = $data->voorstellingFilm;
 		$voorstelling->voorstellingDuur = $data->voorstellingDuur;
-		$voorstelling->voorstellingLocatie = $data->voorstellingLocatie;
 
 		if ( $voorstelling->create() ) {
 			echo json_encode(
@@ -125,7 +121,6 @@ switch ( $method ) {
 		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
 		$voorstelling->voorstellingFilm = $data->voorstellingFilm;
 		$voorstelling->voorstellingDuur = $data->voorstellingDuur;
-		$voorstelling->voorstellingLocatie = $data->voorstellingLocatie;
 
 		if ( $voorstelling->update() ) {
 			http_response_code( 200 );

@@ -11,7 +11,6 @@ class Voorstelling {
     public $voorstellingZaal;
     public $voorstellingFilm;
     public $voorstellingDuur;
-	public $voorstellingLocatie;
 
     //constructor with DB
     public function __construct($db) {
@@ -56,7 +55,6 @@ class Voorstelling {
         $this->voorstellingZaal = $row['voorstellingZaal'];
         $this->voorstellingFilm = $row['voorstellingFilm'];
         $this->voorstellingDuur = $row['voorstellingDuur'];
-        $this->voorstellingLocatie = $row['voorstellingLocatie'];
 
     }
 	
@@ -67,8 +65,7 @@ class Voorstelling {
 		voorstellingTickets = :voorstellingTickets,
 		voorstellingZaal = :voorstellingZaal,
 		voorstellingFilm = :voorstellingFilm,
-		voorstellingDuur = :voorstellingDuur,
-		voorstellingLocatie = :voorstellingLocatie';
+		voorstellingDuur = :voorstellingDuur';
 		
 		//prepare statement
 		$stmt = $this->conn->prepare($query);
@@ -79,7 +76,6 @@ class Voorstelling {
 		$stmt->bindParam(':voorstellingZaal', $this->voorstellingZaal);
 		$stmt->bindParam(':voorstellingFilm', $this->voorstellingFilm);
 		$stmt->bindParam(':voorstellingDuur', $this->voorstellingDuur);
-		$stmt->bindParam(':voorstellingLocatie', $this->voorstellingLocatie);
 		
 		//execute query
 		if($stmt->execute()) {
@@ -97,8 +93,7 @@ class Voorstelling {
 		voorstellingTickets = :voorstellingTickets,
 		voorstellingZaal = :voorstellingZaal,
 		voorstellingFilm = :voorstellingFilm,
-		voorstellingDuur = :voorstellingDuur,
-		voorstellingLocatie = :voorstellingLocatie
+		voorstellingDuur = :voorstellingDuur
 		WHERE
 		 id = :id';
 		
@@ -112,7 +107,6 @@ class Voorstelling {
 		$stmt->bindParam(':voorstellingZaal', $this->voorstellingZaal);
 		$stmt->bindParam(':voorstellingFilm', $this->voorstellingFilm);
 		$stmt->bindParam(':voorstellingDuur', $this->voorstellingDuur);
-		$stmt->bindParam(':voorstellingLocatie', $this->voorstellingLocatie);
 		$stmt->bindParam(':id', $this->id);
 		
 		//execute query

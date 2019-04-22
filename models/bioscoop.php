@@ -14,6 +14,11 @@ class Bioscoop {
     public function __construct($db) {
         $this->conn = $db;
     }
+	
+	// Get the api key from the database
+	public function get_apikey() {
+		
+	}
 
     // Get Bioscoop
     public function read() {

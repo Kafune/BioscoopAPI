@@ -7,13 +7,17 @@ header( 'Content-Type: application/json' );
 
 include_once( '../config/database.php' );
 include_once( '../models/bioscoop.php' );
+include_once( '../models/checkapikey.php');
 
 $database = new Database();
 $db = $database->connect();
 
+$checkapikey = new checkApiKey();
+
 $method = $_SERVER[ 'REQUEST_METHOD' ];
 switch ( $method ) {
 	case 'GET':
+		if ( $api_key ) {
 		if ( !empty( $_GET[ "id" ] ) ) {
 			$bioscoop = new Bioscoop( $db );
 
@@ -40,7 +44,7 @@ switch ( $method ) {
 				);
 			}
 		} else {
-			$bioscoop = new bioscoop( $db );
+			$bioscoop = new Bioscoop( $db );
 
 			$stmt = $bioscoop->read();
 			$num = $stmt->rowCount();
@@ -75,6 +79,8 @@ switch ( $method ) {
 				);
 			}
 		}
+}		
+		
 		break;
 
 

@@ -11,7 +11,7 @@ include_once '../lib/php-jwt-master/src/SignatureInvalidException.php';
 include_once '../lib/php-jwt-master/src/JWT.php';
 use\ Firebase\ JWT\ JWT;
 
-$key = "testkey";
+$key = "example_key";
 $iss = "http://example.org";
 $aud = "http://example.com";
 $iat = 1356999524;
@@ -54,7 +54,7 @@ if ( $jwt ) {
 			"error" => $e->getMessage()
 		) );
 	}
-} else{
+} else {
  
     // set response code
     http_response_code(401);

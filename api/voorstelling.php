@@ -27,7 +27,7 @@ switch ( $method ) {
 				$voorstellingen_arr = array(
 					"id" => $voorstelling->id,
 					"voorstellingNummer" => $voorstelling->voorstellingNummer,
-					"voorstellingTickets" => $voorstelling->voorstellingTickets,
+					"voorstellingTicket" => $voorstelling->voorstellingTicket,
 					"voorstellingZaal" => $voorstelling->voorstellingZaal,
 					"voorstellingFilm" => $voorstelling->voorstellingFilm,
 					"voorstellingDuur" => $voorstelling->voorstellingDuur
@@ -61,7 +61,7 @@ switch ( $method ) {
 					$voorstelling_item = array(
 						"id" => $id,
 						"voorstellingNummer" => $voorstellingNummer,
-						"voorstellingTickets" => $voorstellingTickets,
+						"voorstellingTicket" => $voorstellingTicket,
 						"voorstellingZaal" => $voorstellingZaal,
 						"voorstellingFilm" => $voorstellingFilm,
 						"voorstellingDuur" => $voorstellingDuur					);
@@ -90,7 +90,7 @@ switch ( $method ) {
 		$data = json_decode( file_get_contents( "php://input" ) );
 
 		$voorstelling->voorstellingNummer = $data->voorstellingNummer;
-		$voorstelling->voorstellingTickets = $data->voorstellingTickets;
+		$voorstelling->voorstellingTicket = $data->voorstellingTicket;
 		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
 		$voorstelling->voorstellingFilm = $data->voorstellingFilm;
 		$voorstelling->voorstellingDuur = $data->voorstellingDuur;
@@ -117,7 +117,7 @@ switch ( $method ) {
 
 		$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 		$voorstelling->voorstellingNummer = $data->voorstellingNummer;
-		$voorstelling->voorstellingTickets = $data->voorstellingTickets;
+		$voorstelling->voorstellingTicket = $data->voorstellingTicket;
 		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
 		$voorstelling->voorstellingFilm = $data->voorstellingFilm;
 		$voorstelling->voorstellingDuur = $data->voorstellingDuur;

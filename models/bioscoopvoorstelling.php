@@ -7,7 +7,7 @@ class Voorstelling {
     //Film Properties
     public $id;
     public $voorstellingNummer;
-    public $voorstellingTickets;
+    public $voorstellingTicket;
     public $voorstellingZaal;
     public $voorstellingFilm;
     public $voorstellingDuur;
@@ -51,7 +51,7 @@ class Voorstelling {
         //Set properties
         $this->id = $row['id'];
         $this->voorstellingNummer = $row['voorstellingNummer'];
-        $this->voorstellingTickets = $row['voorstellingTickets'];
+        $this->voorstellingTicket = $row['voorstellingTicket'];
         $this->voorstellingZaal = $row['voorstellingZaal'];
         $this->voorstellingFilm = $row['voorstellingFilm'];
         $this->voorstellingDuur = $row['voorstellingDuur'];
@@ -62,7 +62,7 @@ class Voorstelling {
 	public function create() {
 		$query = 'INSERT INTO '.$this->table.' SET 
 		voorstellingNummer = :voorstellingNummer,
-		voorstellingTickets = :voorstellingTickets,
+		voorstellingTicket = :voorstellingTicket,
 		voorstellingZaal = :voorstellingZaal,
 		voorstellingFilm = :voorstellingFilm,
 		voorstellingDuur = :voorstellingDuur';
@@ -72,7 +72,7 @@ class Voorstelling {
 		
 		//bind data
 		$stmt->bindParam(':voorstellingNummer', $this->voorstellingNummer);
-		$stmt->bindParam(':voorstellingTickets', $this->voorstellingTickets);
+		$stmt->bindParam(':voorstellingTicket', $this->voorstellingTicket);
 		$stmt->bindParam(':voorstellingZaal', $this->voorstellingZaal);
 		$stmt->bindParam(':voorstellingFilm', $this->voorstellingFilm);
 		$stmt->bindParam(':voorstellingDuur', $this->voorstellingDuur);
@@ -90,7 +90,7 @@ class Voorstelling {
 	public function update() {
 		$query = 'UPDATE '.$this->table.' SET 
 		voorstellingNummer = :voorstellingNummer,
-		voorstellingTickets = :voorstellingTickets,
+		voorstellingTicket = :voorstellingTicket,
 		voorstellingZaal = :voorstellingZaal,
 		voorstellingFilm = :voorstellingFilm,
 		voorstellingDuur = :voorstellingDuur
@@ -103,7 +103,7 @@ class Voorstelling {
 		
 		//bind data
 				$stmt->bindParam(':voorstellingNummer', $this->voorstellingNummer);
-		$stmt->bindParam(':voorstellingTickets', $this->voorstellingTickets);
+		$stmt->bindParam(':voorstellingTicket', $this->voorstellingTicket);
 		$stmt->bindParam(':voorstellingZaal', $this->voorstellingZaal);
 		$stmt->bindParam(':voorstellingFilm', $this->voorstellingFilm);
 		$stmt->bindParam(':voorstellingDuur', $this->voorstellingDuur);

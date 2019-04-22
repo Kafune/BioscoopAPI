@@ -22,7 +22,7 @@ switch ( $method ) {
 
 			$ticket->read_single();
 
-			if ( $ticket->ticketNummer != null) {
+			if ( $ticket->id != null) {
 
 				$tickets_arr = array(
 					"id" => $ticket->id,

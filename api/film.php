@@ -22,7 +22,7 @@ switch ( $method ) {
 
 			$film->read_single();
 
-			if ( $film->filmNaam != null ) {
+			if ( $film->id != null ) {
 
 				$films_arr = array(
 					"id" => $film->id,

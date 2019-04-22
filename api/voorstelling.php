@@ -15,6 +15,8 @@ $method = $_SERVER[ 'REQUEST_METHOD' ];
 
 switch ( $method ) {
 	case 'GET':
+		//if level = 1 of hoger: permit get
+		
 		if ( !empty( $_GET[ "id" ] ) ) {
 			$voorstelling = new Voorstelling( $db );
 
@@ -22,7 +24,7 @@ switch ( $method ) {
 
 			$voorstelling->read_single();
 
-			if ( $voorstelling->voorstellingNummer != null) {
+			if ( $voorstelling->id != null) {
 
 				$voorstellingen_arr = array(
 					"id" => $voorstelling->id,
@@ -85,6 +87,7 @@ switch ( $method ) {
 
 
 	case 'POST':
+		//if level 2 of hofer
 		$voorstelling = new Voorstelling( $db );
 		
 		$data = json_decode( file_get_contents( "php://input" ) );
@@ -109,6 +112,7 @@ switch ( $method ) {
 
 
 	case 'PUT':
+		//if level 3 of hoger
 		$voorstelling = new Voorstelling( $db );
 		
 		
@@ -137,6 +141,7 @@ switch ( $method ) {
 		break;
 
 	case 'DELETE':
+		//if level 4 of hoger
 		$voorstelling = new Voorstelling( $db );
 
 		$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();

@@ -22,7 +22,7 @@ switch ( $method ) {
 
 			$locatie->read_single();
 
-			if ( $locatie->locatieNaam != null ) {
+			if ( $locatie->id != null ) {
 
 				$locaties_arr = array(
 					"id" => $locatie->id,

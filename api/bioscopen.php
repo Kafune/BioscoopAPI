@@ -13,13 +13,17 @@ $database = new Database();
 $db = $database->connect();
 
 $checkapikey = new checkApiKey( $db );
+
 $apidata = json_decode( file_get_contents( "php://input" ) );
 $checkapikey->api_key = $apidata->api_key;
 
+$checkapikey->checkApiKey();
+
 $method = $_SERVER[ 'REQUEST_METHOD' ];
-switch ( $method ) {
-	case 'GET':
-		if ( $checkapikey->checkApiKey() ) {
+if ( $checkapikey->api_key ) {
+	switch ( $method ) {
+		case 'GET':
+
 			if ( !empty( $_GET[ "id" ] ) ) {
 				$bioscoop = new Bioscoop( $db );
 
@@ -89,79 +93,81 @@ switch ( $method ) {
 					);
 				}
 			}
-		} else {
-			echo json_encode( array( 'message' => 'Geen API sleutel opgegeven!' ) );
-		}
 
-		break;
+
+			break;
 
 
 
-	case 'POST':
-		$bioscoop = new Bioscoop( $db );
+		case 'POST':
+			$bioscoop = new Bioscoop( $db );
 
-		$data = json_decode( file_get_contents( "php://input" ) );
+			$data = json_decode( file_get_contents( "php://input" ) );
 
-		$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
-		$bioscoop->bioscoopZaal = $data->bioscoopZaal;
-		$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
+			$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
+			$bioscoop->bioscoopZaal = $data->bioscoopZaal;
+			$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
 
-		if ( $bioscoop->create() ) {
-			echo json_encode(
-				array( 'message' => 'Bioscoop aangemaakt' )
-			);
-		} else {
-			echo json_encode(
-				array( 'message' => 'Bioscoop kan niet aangemaakt worden.' )
-			);
-		}
-		break;
-
-
-
-	case 'PUT':
-		$bioscoop = new Bioscoop( $db );
-
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-		$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
-		$bioscoop->bioscoopZaal = $data->bioscoopZaal;
-		$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
-
-		if ( $bioscoop->update() ) {
-			http_response_code( 200 );
-
-			echo json_encode( array( 'message' => 'bioscoop geupdate.' ) );
-		} else {
-			http_response_code( 503 );
-
-			echo json_encode(
-				array( 'message' => 'Bioscoop kan niet gevonden/geupdate worden.' )
-			);
-		}
-
-		break;
-
-	case 'DELETE':
-		$bioscoop = new Bioscoop( $db );
-
-		$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-
-		if ( $bioscoop->delete() ) {
-			http_response_code( 200 );
-
-			echo json_encode(
-				array( 'message' => 'Bioscoop verwijderd' )
-			);
-		} else {
-			http_response_code( 503 );
-
-			echo json_encode(
-				array( 'message' => 'Bioscoop kan niet verwijderd worden' )
-			);
-		}
+			if ( $bioscoop->create() ) {
+				echo json_encode(
+					array( 'message' => 'Bioscoop aangemaakt' )
+				);
+			} else {
+				echo json_encode(
+					array( 'message' => 'Bioscoop kan niet aangemaakt worden.' )
+				);
+			}
+			break;
 
 
-		break;
+
+		case 'PUT':
+			$bioscoop = new Bioscoop( $db );
+
+			$data = json_decode( file_get_contents( "php://input" ) );
+
+			$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
+			$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
+			$bioscoop->bioscoopZaal = $data->bioscoopZaal;
+			$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
+
+			if ( $bioscoop->update() ) {
+				http_response_code( 200 );
+
+				echo json_encode( array( 'message' => 'bioscoop geupdate.' ) );
+			} else {
+				http_response_code( 503 );
+
+				echo json_encode(
+					array( 'message' => 'Bioscoop kan niet gevonden/geupdate worden.' )
+				);
+			}
+
+			break;
+
+		case 'DELETE':
+			$bioscoop = new Bioscoop( $db );
+
+			$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
+
+			if ( $bioscoop->delete() ) {
+				http_response_code( 200 );
+
+				echo json_encode(
+					array( 'message' => 'Bioscoop verwijderd' )
+				);
+			} else {
+				http_response_code( 503 );
+
+				echo json_encode(
+					array( 'message' => 'Bioscoop kan niet verwijderd worden' )
+				);
+			}
+
+
+			break;
+
+	}
+} else {
+	echo json_encode( array( 'message' => 'Geen API sleutel opgegeven!' ) );
 }

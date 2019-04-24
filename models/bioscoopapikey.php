@@ -16,16 +16,13 @@ class checkApiKey {
 		$stmt->bindParam( ':api_key', $api_key );
 		$stmt->execute();
 		
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        
-
-		if ( $row[ 'api_key' ] > 0 ) {
-			//Set properties
-        $this->id = $row['id'];
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);    
+		
+		$this->id = $row['id'];
         $this->api_key = $row['api_key'];
         $this->api_level = $row['api_level'];
 
+		if ( $this->api_key > 0 ) {
 		return true;
 		} else {
 			return false;

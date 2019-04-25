@@ -1,5 +1,5 @@
 <?php
-class checkApiKey {
+class ApiKey {
 	public $id;
 	public $api_key;
 	public $api_level;
@@ -21,15 +21,9 @@ class checkApiKey {
 		$this->id = $row['id'];
         $this->api_key = $row['api_key'];
         $this->api_level = $row['api_level'];
-
-//		if ( $this->api_key <= 0 ) {
-//		return true;
-//		} else {
-//			return false;
-//		}
 	}
 	
-	public function generateApiKey($api_key) {
+	public function create() {
 		
 		
 	}

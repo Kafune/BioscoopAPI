@@ -13,7 +13,7 @@ class checkApiKey {
 	function checkApiKey() {
 		$query = "SELECT * FROM bioscoopapikey WHERE api_key = :api_key";
 		$stmt = $this->conn->prepare($query);
-		$stmt->bindParam( ':api_key', $api_key );
+		$stmt->bindParam( ':api_key', $this->api_key );
 		$stmt->execute();
 		
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);    
@@ -22,11 +22,11 @@ class checkApiKey {
         $this->api_key = $row['api_key'];
         $this->api_level = $row['api_level'];
 
-		if ( $this->api_key > 0 ) {
-		return true;
-		} else {
-			return false;
-		}
+//		if ( $this->api_key <= 0 ) {
+//		return true;
+//		} else {
+//			return false;
+//		}
 	}
 	
 	public function generateApiKey($api_key) {

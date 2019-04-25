@@ -19,11 +19,12 @@ $checkapikey->api_key = $apidata->api_key;
 
 $checkapikey->checkApiKey();
 
+
 $method = $_SERVER[ 'REQUEST_METHOD' ];
-if ( $checkapikey->api_key ) {
+if ( $checkapikey->api_key != null ) {
 	switch ( $method ) {
 		case 'GET':
-
+			
 			if ( !empty( $_GET[ "id" ] ) ) {
 				$bioscoop = new Bioscoop( $db );
 
@@ -38,10 +39,6 @@ if ( $checkapikey->api_key ) {
 						"bioscoopLocatie" => $bioscoop->bioscoopLocatie,
 						"bioscoopZaal" => $bioscoop->bioscoopZaal,
 						"bioscoopAantalPersoneel" => $bioscoop->bioscoopAantalPersoneel
-					);
-
-					$api_arr = array(
-
 					);
 
 					http_response_code( 200 );

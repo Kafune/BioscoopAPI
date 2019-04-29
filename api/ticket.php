@@ -7,12 +7,28 @@ header( 'Content-Type: application/json' );
 
 include_once( '../config/database.php' );
 include_once( '../models/bioscoopticket.php' );
+include_once( '../models/bioscoopapikey.php' );
+include_once( '../models/bioscoopdomain.php' );
 
 $database = new Database();
 $db = $database->connect();
 
+// Check de api key
+$checkapikey = new ApiKey( $db );
+$apidata = json_decode( file_get_contents( "php://input" ) );
+$checkapikey->api_key = $apidata->api_key;
+$checkapikey->checkApiKey();
+
+// Check voor geldige domein
+$checkdomein = new Domain( $db );
+$domeindata = json_decode( file_get_contents( "php://input" ) );
+$checkdomein->domein_naam = $domeindata->domein_naam;
+$checkdomein->checkDomain();
+
 $method = $_SERVER[ 'REQUEST_METHOD' ];
 
+if ( $checkapikey->api_key ) {
+	if ( $checkdomein->domein_naam ) {
 switch ( $method ) {
 	case 'GET':
 		if ( !empty( $_GET[ "id" ] ) ) {
@@ -160,4 +176,10 @@ switch ( $method ) {
 
 
 		break;
+}
+} else {
+		echo json_encode( array( 'message' => 'Het verzoek komt niet van een geldig domein!' ) );
+	}
+} else {
+	echo json_encode( array( 'message' => 'Geen geldige API sleutel opgegeven!' ) );
 }

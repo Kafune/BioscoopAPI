@@ -6,7 +6,7 @@ header( "Access-Control-Allow-Credentials: true" );
 header( 'Content-Type: application/json' );
 
 include_once( '../config/database.php' );
-include_once( '../models/bioscoopapikey.php' );
+include_once( '../models/bioscoopdomain.php' );
 
 $database = new Database();
 $db = $database->connect();
@@ -14,40 +14,40 @@ $db = $database->connect();
 $method = $_SERVER[ 'REQUEST_METHOD' ];
 switch ( $method ) {
 	case 'GET':
-		$apikey = new ApiKey( $db );
+		$domain = new Domain( $db );
 		$apidata = json_decode( file_get_contents( "php://input" ) );
-		$apikey->api_key = $apidata->api_key;
-		$apikey->checkApiKey();
-		if ( $apikey->api_key ) {
-			$apikeys_arr = array(
-				"id" => $apikey->id,
-				"api_key" => $apikey->api_key,
-				"api_level" => $apikey->api_level
+		$domain->apiKey = $apidata->apiKey;
+		$domain->verifyDomain();
+		if ( $domain->apiKey ) {
+			$domains_arr = array(
+				"id" => $domain->id,
+				"domainNaam" => $domain->domein_naam,
+				"apiKey" => $domain->apiKey
 			);
 
 			http_response_code( 200 );
 
-			echo json_encode( $apikeys_arr );
+			echo json_encode( $domains_arr );
 
 		} else {
 			http_response_code( 404 );
 
 			echo json_encode(
-				array( 'message' => 'Geen Api key gevonden met deze waarde' )
+				array( 'message' => 'Geen domein gevonden met deze API key' )
 			);
 		}
 		break;
 	case 'POST':
-		$apikey = new ApiKey( $db );
+		$domain = new Domain( $db );
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
-		$apikey->api_key = md5( rand() );
-		$apikey->api_level = $data->api_level;
+		$domain->api_key = md5( rand() );
+		$domain->api_level = $data->api_level;
 
-		if ( $apikey->create() ) {
+		if ( $domain->create() ) {
 			echo json_encode(
-				array( 'message' => 'API Sleutel aangemaakt. Uw API code is: ' . $apikey->api_key . '. Maak nu een nieuwe domein aan om toegang te krijgen op de API.' )
+				array( 'message' => 'API Sleutel aangemaakt. Uw API code is: ' . $domain->api_key . '. Maak nu een nieuwe domein aan om toegang te krijgen op de API.' )
 			);
 		} else {
 			echo json_encode(

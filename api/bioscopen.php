@@ -23,7 +23,6 @@ $checkapikey->checkApiKey();
 $checkdomein = new Domain( $db );
 $domeindata = json_decode( file_get_contents( "php://input" ) );
 $checkdomein->domein_naam = $domeindata->domein_naam;
-$checkdomein->api_key = $domeindata->api_key;
 $checkdomein->checkDomain();
 
 $method = $_SERVER[ 'REQUEST_METHOD' ];
@@ -31,7 +30,7 @@ if ( $checkapikey->api_key ) {
 	if ( $checkdomein->domein_naam ) {
 		switch ( $method ) {
 			case 'GET':
-
+				if ( $checkapikey->api_level > 1 ) {
 				if ( !empty( $_GET[ "id" ] ) ) {
 					$bioscoop = new Bioscoop( $db );
 
@@ -94,6 +93,11 @@ if ( $checkapikey->api_key ) {
 						);
 					}
 				}
+				} else {
+					echo json_encode(
+						array( 'message' => 'U heeft geen rechten om bioscopen op te halen.' )
+					);
+				}
 
 
 				break;
@@ -101,21 +105,27 @@ if ( $checkapikey->api_key ) {
 
 
 			case 'POST':
-				$bioscoop = new Bioscoop( $db );
+				if ( $checkapikey->api_level > 1 ) {
+					$bioscoop = new Bioscoop( $db );
 
-				$data = json_decode( file_get_contents( "php://input" ) );
+					$data = json_decode( file_get_contents( "php://input" ) );
 
-				$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
-				$bioscoop->bioscoopZaal = $data->bioscoopZaal;
-				$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
+					$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
+					$bioscoop->bioscoopZaal = $data->bioscoopZaal;
+					$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
 
-				if ( $bioscoop->create() ) {
-					echo json_encode(
-						array( 'message' => 'Bioscoop aangemaakt' )
-					);
+					if ( $bioscoop->create() ) {
+						echo json_encode(
+							array( 'message' => 'Bioscoop aangemaakt' )
+						);
+					} else {
+						echo json_encode(
+							array( 'message' => 'Bioscoop kan niet aangemaakt worden.' )
+						);
+					}
 				} else {
 					echo json_encode(
-						array( 'message' => 'Bioscoop kan niet aangemaakt worden.' )
+						array( 'message' => 'U heeft niet de rechten om dit bioscoop aan te maken.' )
 					);
 				}
 				break;
@@ -123,45 +133,58 @@ if ( $checkapikey->api_key ) {
 
 
 			case 'PUT':
-				$bioscoop = new Bioscoop( $db );
+				if ( $checkapikey->api_level > 2 ) {
+					$bioscoop = new Bioscoop( $db );
 
-				$data = json_decode( file_get_contents( "php://input" ) );
+					$data = json_decode( file_get_contents( "php://input" ) );
 
-				$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-				$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
-				$bioscoop->bioscoopZaal = $data->bioscoopZaal;
-				$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
+					$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
+					$bioscoop->bioscoopLocatie = $data->bioscoopLocatie;
+					$bioscoop->bioscoopZaal = $data->bioscoopZaal;
+					$bioscoop->bioscoopAantalPersoneel = $data->bioscoopAantalPersoneel;
 
-				if ( $bioscoop->update() ) {
-					http_response_code( 200 );
+					if ( $bioscoop->update() ) {
+						http_response_code( 200 );
 
-					echo json_encode( array( 'message' => 'bioscoop geupdate.' ) );
+						echo json_encode( array( 'message' => 'bioscoop geupdate.' ) );
+					} else {
+						http_response_code( 503 );
+
+						echo json_encode(
+							array( 'message' => 'Bioscoop kan niet gevonden/geupdate worden.' )
+						);
+					}
 				} else {
-					http_response_code( 503 );
-
 					echo json_encode(
-						array( 'message' => 'Bioscoop kan niet gevonden/geupdate worden.' )
+						array( 'message' => 'U heeft niet de rechten om dit bioscoop te bewerken.' )
 					);
 				}
+
 
 				break;
 
 			case 'DELETE':
-				$bioscoop = new Bioscoop( $db );
+				if ( $checkapikey->api_level > 3 ) {
+					$bioscoop = new Bioscoop( $db );
 
-				$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
+					$bioscoop->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
 
-				if ( $bioscoop->delete() ) {
-					http_response_code( 200 );
+					if ( $bioscoop->delete() ) {
+						http_response_code( 200 );
 
-					echo json_encode(
-						array( 'message' => 'Bioscoop verwijderd' )
-					);
+						echo json_encode(
+							array( 'message' => 'Bioscoop verwijderd' )
+						);
+					} else {
+						http_response_code( 503 );
+
+						echo json_encode(
+							array( 'message' => 'Bioscoop kan niet verwijderd worden' )
+						);
+					}
 				} else {
-					http_response_code( 503 );
-
 					echo json_encode(
-						array( 'message' => 'Bioscoop kan niet verwijderd worden' )
+						array( 'message' => 'U heeft niet de rechten om dit bioscoop te verwijderen.' )
 					);
 				}
 

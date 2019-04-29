@@ -1,5 +1,7 @@
 <?php
 class ApiKey {
+	private $table = 'bioscoopapikey';
+	
 	public $id;
 	public $api_key;
 	public $api_level;
@@ -11,7 +13,7 @@ class ApiKey {
 
 	public
 	function checkApiKey() {
-		$query = "SELECT * FROM bioscoopapikey WHERE api_key = :api_key";
+		$query = "SELECT * FROM ".$this->table." WHERE api_key = :api_key";
 		$stmt = $this->conn->prepare($query);
 		$stmt->bindParam( ':api_key', $this->api_key );
 		$stmt->execute();
@@ -24,8 +26,25 @@ class ApiKey {
 	}
 	
 	public function create() {
+		$query = 'INSERT INTO '.$this->table.' SET 
+		api_key = :api_key,
+		api_level = :api_level';
 		
+		//prepare statement
+		$stmt = $this->conn->prepare($query);
+
 		
+		//bind data
+		$stmt->bindParam(':api_key', $this->api_key);
+		$stmt->bindParam(':api_level', $this->api_level);
+		
+		//execute query
+		if($stmt->execute()) {
+			return true;
+		}
+		//print error if something goes wrong
+		printf("Error: $s.\n", $stmt->error);
+		return false;		
 	}
 }
 

@@ -16,13 +16,13 @@ switch ( $method ) {
 	case 'GET':
 		$domain = new Domain( $db );
 		$apidata = json_decode( file_get_contents( "php://input" ) );
-		$domain->apiKey = $apidata->apiKey;
+		$domain->api_key = $apidata->api_key;
 		$domain->verifyDomain();
-		if ( $domain->apiKey ) {
+		if ( $domain->api_key ) {
 			$domains_arr = array(
 				"id" => $domain->id,
 				"domainNaam" => $domain->domein_naam,
-				"apiKey" => $domain->apiKey
+				"api_key" => $domain->api_key
 			);
 
 			http_response_code( 200 );
@@ -42,16 +42,16 @@ switch ( $method ) {
 
 		$data = json_decode( file_get_contents( "php://input" ) );
 
-		$domain->api_key = md5( rand() );
-		$domain->api_level = $data->api_level;
+		$domain->domein_naam = $data->domein_naam;
+		$domain->api_key = $data->api_key;
 
 		if ( $domain->create() ) {
 			echo json_encode(
-				array( 'message' => 'API Sleutel aangemaakt. Uw API code is: ' . $domain->api_key . '. Maak nu een nieuwe domein aan om toegang te krijgen op de API.' )
+				array( 'message' => 'Domein aangemaakt met de Api key '.$domain->api_key.' Uw domein is: ' . $domain->domein_naam . '. U heeft nu toegang tot de API op basis van uw API level.' )
 			);
 		} else {
 			echo json_encode(
-				array( 'message' => 'De API sleutel kon niet aangemaakt worden.' )
+				array( 'message' => 'Het domein kon niet aangemaakt worden.' )
 			);
 		}
 		break;

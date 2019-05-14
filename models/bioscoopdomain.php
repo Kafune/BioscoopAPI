@@ -1,5 +1,6 @@
 <?php
 class Domain {
+	private $conn;
 	private $table = 'bioscoopdomeinen';
 	
 	public $id;
@@ -14,7 +15,7 @@ class Domain {
 	// Check of the domein overeen komt met de database voordat je toegang hebt tot de API zelf.
 	public function checkDomain() {
 		
-		$query = "SELECT * FROM ".$this->table."  WHERE domeinNaam = :domeinnaam";
+		$query = 'SELECT * FROM '.$this->table.'  WHERE domeinNaam = :domeinnaam';
 		$stmt = $this->conn->prepare($query);
 		$stmt->bindParam( ':domeinnaam', $this->domein_naam );
 		$stmt->execute();
@@ -26,9 +27,9 @@ class Domain {
 	
 	// Check de domein als de gebruiker deze is vergeten op basis van de API key.
 	public function verifyDomain() {
-		$query = "SELECT * FROM ".$this->table." as d
+		$query = 'SELECT * FROM '.$this->table.' as d
 		INNER JOIN bioscoopapikey as a ON d.api_key = a.id
-		WHERE a.api_key = :api_key";
+		WHERE a.api_key = :api_key';
 		$stmt = $this->conn->prepare($query);
 		$stmt->bindParam( ':api_key', $this->api_key );
 		$stmt->execute();
@@ -39,7 +40,7 @@ class Domain {
 		$this->domein_naam = $row['domeinNaam'];
 	}
 	
-	//TODO: INSERT domain met bepaalde API key
+	// Maak een nieuwe domein aan op basis van de API key die er is opgegeven.
 		public function create() {
 		$query = 'SELECT * FROM bioscoopapikey WHERE api_key = :api_key';			
 
@@ -56,10 +57,10 @@ class Domain {
 			
 		$row = $stmt->fetch();
 			
-		$result = $row['id'];
+		$getId = $row['id'];
 			
 		$query = 'INSERT INTO '.$this->table.' SET 
-		domeinNaam = :domein_naam,
+		domeinNaam = :domeinnaam,
 		api_key = :api_key';
 		
 		//prepare statement
@@ -67,8 +68,8 @@ class Domain {
 
 		
 		//bind data
-		$stmt->bindParam(':domein_naam', $this->domein_naam);
-		$stmt->bindParam(':api_key', $result);
+		$stmt->bindParam(':domeinnaam', $this->domein_naam);
+		$stmt->bindParam(':api_key', $getId);
 		
 		//execute query
 		if($stmt->execute()) {

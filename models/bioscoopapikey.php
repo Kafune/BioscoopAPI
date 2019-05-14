@@ -13,7 +13,7 @@ class ApiKey {
 
 	public
 	function checkApiKey() {
-		$query = "SELECT * FROM ".$this->table." WHERE api_key = :api_key";
+		$query = 'SELECT * FROM '.$this->table.' WHERE api_key = :api_key';
 		$stmt = $this->conn->prepare($query);
 		$stmt->bindParam( ':api_key', $this->api_key );
 		$stmt->execute();

@@ -5,7 +5,7 @@ header( "Access-Control-Allow-Methods: POST PUT GET DELETE" );
 header( "Access-Control-Allow-Credentials: true" );
 header( 'Content-Type: application/json' );
 
-include_once( '../config/database.php' );
+include_once( '../config/Database.php' );
 include_once( '../models/bioscoop.php' );
 include_once( '../models/bioscoopapikey.php' );
 include_once( '../models/bioscoopdomain.php' );
@@ -26,10 +26,12 @@ $checkdomein->domein_naam = $domeindata->domein_naam;
 $checkdomein->checkDomain();
 
 $method = $_SERVER[ 'REQUEST_METHOD' ];
-if ( $checkapikey->api_key ) {
-	if ( $checkdomein->domein_naam ) {
+
+
 		switch ( $method ) {
 			case 'GET':
+                if ( $checkapikey->api_key ) {
+                    if ( $checkdomein->domein_naam ) {
 				if ( $checkapikey->api_level > 1 ) {
 				if ( !empty( $_GET[ "id" ] ) ) {
 					$bioscoop = new Bioscoop( $db );
@@ -98,6 +100,13 @@ if ( $checkapikey->api_key ) {
 						array( 'message' => 'U heeft geen rechten om bioscopen op te halen.' )
 					);
 				}
+                } else {
+                    echo json_encode( array( 'message' => 'Het verzoek komt niet van een geldig domein!' ) );
+                }
+                } else {
+                    echo json_encode( array( 'message' => 'Geen geldige API sleutel opgegeven!' ) );
+                }
+
 
 
 				break;
@@ -191,9 +200,4 @@ if ( $checkapikey->api_key ) {
 
 				break;
 		}
-	} else {
-		echo json_encode( array( 'message' => 'Het verzoek komt niet van een geldig domein!' ) );
-	}
-} else {
-	echo json_encode( array( 'message' => 'Geen geldige API sleutel opgegeven!' ) );
-}
+

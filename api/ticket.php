@@ -5,30 +5,31 @@ header( "Access-Control-Allow-Methods: POST PUT GET DELETE" );
 header( "Access-Control-Allow-Credentials: true" );
 header( 'Content-Type: application/json' );
 
-include_once( '../config/database.php' );
-include_once( '../models/bioscoopticket.php' );
-include_once( '../models/bioscoopapikey.php' );
-include_once( '../models/bioscoopdomain.php' );
+include( '../config/Database.php' );
+include( '../models/bioscoopticket.php' );
+include( '../models/bioscoopapikey.php' );
+include( '../models/bioscoopdomain.php' );
 
 $database = new Database();
 $db = $database->connect();
 
 // Check de api key
-$checkapikey = new ApiKey( $db );
+$apikey = new ApiKey( $db );
 $apidata = json_decode( file_get_contents( "php://input" ) );
-$checkapikey->api_key = $apidata->api_key;
-$checkapikey->checkApiKey();
+$apikey->api_key = $apidata->api_key;
+$apikey->checkApiKey();
 
 // Check voor geldige domein
-$checkdomein = new Domain( $db );
+$domain = new Domain( $db );
 $domeindata = json_decode( file_get_contents( "php://input" ) );
-$checkdomein->domein_naam = $domeindata->domein_naam;
-$checkdomein->checkDomain();
+$domain->domein_naam = $domeindata->domein_naam;
+$domain->checkDomain();
 
-$method = $_SERVER[ 'REQUEST_METHOD' ];
 
-if ( $checkapikey->api_key ) {
-	if ( $checkdomein->domein_naam ) {
+
+if ( $apikey->api_key ) {
+	if ( $domain->domein_naam ) {
+        $method = $_SERVER[ 'REQUEST_METHOD' ];
 switch ( $method ) {
 	case 'GET':
 		if ( !empty( $_GET[ "id" ] ) ) {
@@ -178,8 +179,10 @@ switch ( $method ) {
 		break;
 }
 } else {
+        http_response_code( 404 );
 		echo json_encode( array( 'message' => 'Het verzoek komt niet van een geldig domein!' ) );
 	}
 } else {
+    http_response_code( 404 );
 	echo json_encode( array( 'message' => 'Geen geldige API sleutel opgegeven!' ) );
 }

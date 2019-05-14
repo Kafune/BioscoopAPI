@@ -5,7 +5,7 @@ header( "Access-Control-Allow-Methods: POST PUT GET DELETE" );
 header( "Access-Control-Allow-Credentials: true" );
 header( 'Content-Type: application/json' );
 
-include_once( '../config/database.php' );
+include_once( '../config/Database.php' );
 include_once( '../models/bioscooplocatie.php' );
 include_once( '../models/bioscoopapikey.php' );
 include_once( '../models/bioscoopdomain.php' );

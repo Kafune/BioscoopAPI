@@ -5,7 +5,7 @@ header( "Access-Control-Allow-Methods: POST PUT GET DELETE" );
 header( "Access-Control-Allow-Credentials: true" );
 header( 'Content-Type: application/json' );
 
-include_once( '../config/database.php' );
+include_once( '../config/Database.php' );
 include_once( '../models/bioscoopdomain.php' );
 
 $database = new Database();
@@ -21,7 +21,7 @@ switch ( $method ) {
 		if ( $domain->api_key ) {
 			$domains_arr = array(
 				"id" => $domain->id,
-				"domainNaam" => $domain->domein_naam,
+				"domeinNaam" => $domain->domein_naam,
 				"api_key" => $domain->api_key
 			);
 

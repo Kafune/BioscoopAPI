@@ -1,178 +1,203 @@
 <?php
-header( "Access-Control-Allow-Origin: *" );
-header( "Access-Control-Allow-Headers: access" );
-header( "Access-Control-Allow-Methods: POST PUT GET DELETE" );
-header( "Access-Control-Allow-Credentials: true" );
-header( 'Content-Type: application/json' );
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST PUT GET DELETE");
+header("Access-Control-Allow-Credentials: true");
+header('Content-Type: application/json');
 
-include_once( '../config/Database.php' );
-include_once( '../models/bioscooplocatie.php' );
-include_once( '../models/bioscoopapikey.php' );
-include_once( '../models/bioscoopdomain.php' );
+include_once('../config/Database.php');
+include_once('../models/bioscooplocatie.php');
+include_once('../models/bioscoopapikey.php');
+include_once('../models/bioscoopdomain.php');
 
 $database = new Database();
 $db = $database->connect();
 
 // Check de api key
-$checkapikey = new ApiKey( $db );
-$apidata = json_decode( file_get_contents( "php://input" ) );
-$checkapikey->api_key = $apidata->api_key;
-$checkapikey->checkApiKey();
+$apikey = new ApiKey($db);
+$apidata = json_decode(file_get_contents("php://input"));
+$apikey->api_key = $apidata->api_key;
+$apikey->checkApiKey();
 
 // Check voor geldige domein
-$checkdomein = new Domain( $db );
-$domeindata = json_decode( file_get_contents( "php://input" ) );
+$checkdomein = new Domain($db);
+$domeindata = json_decode(file_get_contents("php://input"));
 $checkdomein->domein_naam = $domeindata->domein_naam;
 $checkdomein->checkDomain();
 
-$method = $_SERVER[ 'REQUEST_METHOD' ];
+$method = $_SERVER['REQUEST_METHOD'];
 
-if ( $checkapikey->api_key ) {
-	if ( $checkdomein->domein_naam ) {
-switch ( $method ) {
-	case 'GET':
-		if ( !empty( $_GET[ "id" ] ) ) {
-			$locatie = new Locatie( $db );
+if ($apikey->api_key) {
+    if ($checkdomein->domein_naam) {
+        switch ($method) {
+            case 'GET':
+                if ($apikey->api_level > 0) {
+                    if (!empty($_GET["id"])) {
+                        $locatie = new Locatie($db);
 
-			$locatie->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
+                        $locatie->id = isset($_GET['id']) ? $_GET['id'] : die();
 
-			$locatie->read_single();
+                        $locatie->read_single();
 
-			if ( $locatie->id != null ) {
+                        if ($locatie->id != null) {
 
-				$locaties_arr = array(
-					"id" => $locatie->id,
-					"locatieNaam" => $locatie->locatieNaam,
-					"locatieStraat" => $locatie->locatieStraat,
-					"locatiePostcode" => $locatie->locatiePostcode,
-					"locatieProvincie" => $locatie->locatieProvincie
-				);
+                            $locaties_arr = array(
+                                "id" => $locatie->id,
+                                "locatieNaam" => $locatie->locatieNaam,
+                                "locatieStraat" => $locatie->locatieStraat,
+                                "locatiePostcode" => $locatie->locatiePostcode,
+                                "locatieProvincie" => $locatie->locatieProvincie
+                            );
 
-				http_response_code( 200 );
+                            http_response_code(200);
 
-				echo json_encode( $locaties_arr );
-			} else {
-				http_response_code( 404 );
+                            echo json_encode($locaties_arr);
+                        } else {
+                            http_response_code(404);
 
-				echo json_encode(
-					array( 'message' => 'Deze locatie is niet gevonden' )
-				);
-			}
-		} else {
-			$locatie = new Locatie( $db );
+                            echo json_encode(
+                                array('message' => 'Deze locatie is niet gevonden')
+                            );
+                        }
+                    } else {
+                        $locatie = new Locatie($db);
 
-			$stmt = $locatie->read();
-			$num = $stmt->rowCount();
+                        $stmt = $locatie->read();
+                        $num = $stmt->rowCount();
 
-			if ( $num > 0 ) {
+                        if ($num > 0) {
 
-				$locaties_arr = array();
-				$locaties_arr[ "records" ] = array();
+                            $locaties_arr = array();
+                            $locaties_arr["records"] = array();
 
-				while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
-					extract( $row );
+                                extract($row);
 
-					$locatie_item = array(
-						"id" => $id,
-						"locatieNaam" => $locatieNaam,
-						"locatieStraat" => $locatieStraat,
-						"locatiePostcode" => $locatiePostcode,
-						"locatieProvincie" => $locatieProvincie
-					);
+                                $locatie_item = array(
+                                    "id" => $id,
+                                    "locatieNaam" => $locatieNaam,
+                                    "locatieStraat" => $locatieStraat,
+                                    "locatiePostcode" => $locatiePostcode,
+                                    "locatieProvincie" => $locatieProvincie
+                                );
 
-					array_push( $locaties_arr[ "records" ], $locatie_item );
-				}
+                                array_push($locaties_arr["records"], $locatie_item);
+                            }
 
-				http_response_code( 200 );
+                            http_response_code(200);
 
-				echo json_encode( $locaties_arr );
-			} else {
-				http_response_code( 404 );
+                            echo json_encode($locaties_arr);
+                        } else {
+                            http_response_code(404);
 
-				echo json_encode(
-					array( 'message' => 'Geen locaties gevonden' )
-				);
-			}
-		}
-		break;
-
-
-
-	case 'POST':
-
-		$locatie = new Locatie( $db );
-
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$locatie->locatieNaam = $data->locatieNaam;
-		$locatie->locatieStraat = $data->locatieStraat;
-		$locatie->locatiePostcode = $data->locatiePostcode;
-		$locatie->locatieProvincie = $data->locatieProvincie;
-
-		if ( $locatie->create() ) {
-			echo json_encode(
-				array( 'message' => 'Locatie aangemaakt' )
-			);
-		} else {
-			echo json_encode(
-				array( 'message' => 'Locatie kan niet toegevoegd worden.' )
-			);
-		}
-		break;
+                            echo json_encode(
+                                array('message' => 'Geen locaties gevonden')
+                            );
+                        }
+                    }
+                } else {
+                    http_response_code(401);
+                    echo json_encode(
+                        array('message' => 'U heeft geen rechten om locaties op te halen.')
+                    );
+                }
+                break;
 
 
+            case 'POST':
+                if ($apikey->api_level > 1) {
+                    $locatie = new Locatie($db);
 
-	case 'PUT':
-		$locatie = new Locatie( $db );
+                    $data = json_decode(file_get_contents("php://input"));
 
-		$data = json_decode( file_get_contents( "php://input" ) );
+                    $locatie->locatieNaam = $data->locatieNaam;
+                    $locatie->locatieStraat = $data->locatieStraat;
+                    $locatie->locatiePostcode = $data->locatiePostcode;
+                    $locatie->locatieProvincie = $data->locatieProvincie;
 
-		$locatie->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-		$locatie->locatieNaam = $data->locatieNaam;
-		$locatie->locatieStraat = $data->locatieStraat;
-		$locatie->locatiePostcode = $data->locatiePostcode;
-		$locatie->locatieProvincie = $data->locatieProvincie;
-
-		if ( $locatie->update() ) {
-			http_response_code( 200 );
-
-			echo json_encode( array( 'message' => 'Locatie bijgewerkt.' ) );
-		} else {
-			http_response_code( 503 );
-
-			echo json_encode(
-				array( 'message' => 'Locatie kan niet bijgewerkt worden.' )
-			);
-		}
-
-		break;
-
-	case 'DELETE':
-		$locatie = new Locatie( $db );
-
-		$locatie->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-
-		if ( $locatie->delete() ) {
-			http_response_code( 200 );
-
-			echo json_encode(
-				array( 'message' => 'Locatie verwijderd' )
-			);
-		} else {
-			http_response_code( 503 );
-
-			echo json_encode(
-				array( 'message' => 'Voorstelling kan niet verwijderd worden.' )
-			);
-		}
+                    if ($locatie->create()) {
+                        echo json_encode(
+                            array('message' => 'Locatie aangemaakt')
+                        );
+                    } else {
+                        echo json_encode(
+                            array('message' => 'Locatie kan niet toegevoegd worden.')
+                        );
+                    }
+                } else {
+                    http_response_code(401);
+                    echo json_encode(
+                        array('message' => 'U heeft niet de rechten om een locatie aan te maken.')
+                    );
+                }
+                break;
 
 
-		break;
-}
+            case 'PUT':
+                if ($apikey->api_level > 2) {
+                    $locatie = new Locatie($db);
+
+                    $data = json_decode(file_get_contents("php://input"));
+
+                    $locatie->id = isset($_GET['id']) ? $_GET['id'] : die();
+                    $locatie->locatieNaam = $data->locatieNaam;
+                    $locatie->locatieStraat = $data->locatieStraat;
+                    $locatie->locatiePostcode = $data->locatiePostcode;
+                    $locatie->locatieProvincie = $data->locatieProvincie;
+
+                    if ($locatie->update()) {
+                        http_response_code(200);
+
+                        echo json_encode(array('message' => 'Locatie bijgewerkt.'));
+                    } else {
+                        http_response_code(503);
+
+                        echo json_encode(
+                            array('message' => 'Locatie kan niet bijgewerkt worden.')
+                        );
+                    }
+                } else {
+                    http_response_code(401);
+                    echo json_encode(
+                        array('message' => 'U heeft niet de rechten om een locatie te bewerken.')
+                    );
+                }
+
+                break;
+
+            case 'DELETE':
+                if ($apikey->api_level > 3) {
+                    $locatie = new Locatie($db);
+
+                    $locatie->id = isset($_GET['id']) ? $_GET['id'] : die();
+
+                    if ($locatie->delete()) {
+                        http_response_code(200);
+
+                        echo json_encode(
+                            array('message' => 'Locatie verwijderd')
+                        );
+                    } else {
+                        http_response_code(503);
+
+                        echo json_encode(
+                            array('message' => 'Voorstelling kan niet verwijderd worden.')
+                        );
+                    }
+                } else {
+                    http_response_code(401);
+                    echo json_encode(
+                        array('message' => 'U heeft niet de rechten om een locatie te verwijderen.')
+                    );
+                }
+
+
+                break;
+        }
+    } else {
+        echo json_encode(array('message' => 'Het verzoek komt niet van een geldig domein!'));
+    }
 } else {
-		echo json_encode( array( 'message' => 'Het verzoek komt niet van een geldig domein!' ) );
-	}
-} else {
-	echo json_encode( array( 'message' => 'Geen geldige API sleutel opgegeven!' ) );
+    echo json_encode(array('message' => 'Geen geldige API sleutel opgegeven!'));
 }

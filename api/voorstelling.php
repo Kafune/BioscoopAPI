@@ -1,187 +1,210 @@
 <?php
-header( "Access-Control-Allow-Origin: *" );
-header( "Access-Control-Allow-Headers: access" );
-header( "Access-Control-Allow-Methods: POST PUT GET DELETE" );
-header( "Access-Control-Allow-Credentials: true" );
-header( 'Content-Type: application/json' );
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST PUT GET DELETE");
+header("Access-Control-Allow-Credentials: true");
+header('Content-Type: application/json');
 
-include_once( '../config/Database.php' );
-include_once( '../models/bioscoopvoorstelling.php' );
-include_once( '../models/bioscoopapikey.php' );
-include_once( '../models/bioscoopdomain.php' );
+include_once('../config/Database.php');
+include_once('../models/bioscoopvoorstelling.php');
+include_once('../models/bioscoopapikey.php');
+include_once('../models/bioscoopdomain.php');
 
 $database = new Database();
 $db = $database->connect();
 
 // Check de api key
-$checkapikey = new ApiKey( $db );
-$apidata = json_decode( file_get_contents( "php://input" ) );
-$checkapikey->api_key = $apidata->api_key;
-$checkapikey->checkApiKey();
+$apikey = new ApiKey($db);
+$apidata = json_decode(file_get_contents("php://input"));
+$apikey->api_key = $apidata->api_key;
+$apikey->checkApiKey();
 
 // Check voor geldige domein
-$checkdomein = new Domain( $db );
-$domeindata = json_decode( file_get_contents( "php://input" ) );
+$checkdomein = new Domain($db);
+$domeindata = json_decode(file_get_contents("php://input"));
 $checkdomein->domein_naam = $domeindata->domein_naam;
 $checkdomein->checkDomain();
 
-$method = $_SERVER[ 'REQUEST_METHOD' ];
+$method = $_SERVER['REQUEST_METHOD'];
 
-if ( $checkapikey->api_key ) {
-	if ( $checkdomein->domein_naam ) {
-switch ( $method ) {
-	case 'GET':
-		//if level = 1 of hoger: permit get
-		
-		if ( !empty( $_GET[ "id" ] ) ) {
-			$voorstelling = new Voorstelling( $db );
+if ($apikey->api_key) {
+    if ($checkdomein->domein_naam) {
+        switch ($method) {
+            case 'GET':
+                if ($apikey->api_level > 0) {
 
-			$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
+                    if (!empty($_GET["id"])) {
+                        $voorstelling = new Voorstelling($db);
 
-			$voorstelling->read_single();
+                        $voorstelling->id = isset($_GET['id']) ? $_GET['id'] : die();
 
-			if ( $voorstelling->id != null) {
+                        $voorstelling->read_single();
 
-				$voorstellingen_arr = array(
-					"id" => $voorstelling->id,
-					"voorstellingNummer" => $voorstelling->voorstellingNummer,
-					"voorstellingTicket" => $voorstelling->voorstellingTicket,
-					"voorstellingZaal" => $voorstelling->voorstellingZaal,
-					"voorstellingFilm" => $voorstelling->voorstellingFilm,
-					"voorstellingDuur" => $voorstelling->voorstellingDuur
-				);
+                        if ($voorstelling->id != null) {
 
-				http_response_code( 200 );
+                            $voorstellingen_arr = array(
+                                "id" => $voorstelling->id,
+                                "voorstellingNummer" => $voorstelling->voorstellingNummer,
+                                "voorstellingTicket" => $voorstelling->voorstellingTicket,
+                                "voorstellingZaal" => $voorstelling->voorstellingZaal,
+                                "voorstellingFilm" => $voorstelling->voorstellingFilm,
+                                "voorstellingDuur" => $voorstelling->voorstellingDuur
+                            );
 
-				echo json_encode( $voorstellingen_arr );
-			} else {
-				http_response_code( 404 );
+                            http_response_code(200);
 
-				echo json_encode(
-					array( 'message' => 'Voorstelling niet gevonden' )
-				);
-			}
-		} else {
-			$voorstelling = new Voorstelling( $db );
+                            echo json_encode($voorstellingen_arr);
+                        } else {
+                            http_response_code(404);
 
-			$stmt = $voorstelling->read();
-			$num = $stmt->rowCount();
+                            echo json_encode(
+                                array('message' => 'Voorstelling niet gevonden')
+                            );
+                        }
+                    } else {
+                        $voorstelling = new Voorstelling($db);
 
-			if ( $num > 0 ) {
+                        $stmt = $voorstelling->read();
+                        $num = $stmt->rowCount();
 
-				$voorstellingen_arr = array();
-				$voorstellingen_arr[ "records" ] = array();
+                        if ($num > 0) {
 
-				while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
+                            $voorstellingen_arr = array();
+                            $voorstellingen_arr["records"] = array();
 
-					extract( $row );
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
-					$voorstelling_item = array(
-						"id" => $id,
-						"voorstellingNummer" => $voorstellingNummer,
-						"voorstellingTicket" => $voorstellingTicket,
-						"voorstellingZaal" => $voorstellingZaal,
-						"voorstellingFilm" => $voorstellingFilm,
-						"voorstellingDuur" => $voorstellingDuur					);
+                                extract($row);
 
-					array_push( $voorstellingen_arr[ "records" ], $voorstelling_item );
-				}
+                                $voorstelling_item = array(
+                                    "id" => $id,
+                                    "voorstellingNummer" => $voorstellingNummer,
+                                    "voorstellingTicket" => $voorstellingTicket,
+                                    "voorstellingZaal" => $voorstellingZaal,
+                                    "voorstellingFilm" => $voorstellingFilm,
+                                    "voorstellingDuur" => $voorstellingDuur);
 
-				http_response_code( 200 );
+                                array_push($voorstellingen_arr["records"], $voorstelling_item);
+                            }
 
-				echo json_encode( $voorstellingen_arr );
-			} else {
-				http_response_code( 404 );
+                            http_response_code(200);
 
-				echo json_encode(
-					array( 'message' => 'Geen voorstellingen gevonden' )
-				);
-			}
-		}
-		break;
+                            echo json_encode($voorstellingen_arr);
+                        } else {
+                            http_response_code(404);
 
-
-
-	case 'POST':
-		//if level 2 of hofer
-		$voorstelling = new Voorstelling( $db );
-		
-		$data = json_decode( file_get_contents( "php://input" ) );
-
-		$voorstelling->voorstellingNummer = $data->voorstellingNummer;
-		$voorstelling->voorstellingTicket = $data->voorstellingTicket;
-		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
-		$voorstelling->voorstellingFilm = $data->voorstellingFilm;
-		$voorstelling->voorstellingDuur = $data->voorstellingDuur;
-
-		if ( $voorstelling->create() ) {
-			echo json_encode(
-				array( 'message' => 'Voorstelling aangemaakt' )
-			);
-		} else {
-			echo json_encode(
-				array( 'message' => 'Voorstelling kan niet aangemaakt worden.' )
-			);
-		}
-		break;
+                            echo json_encode(
+                                array('message' => 'Geen voorstellingen gevonden')
+                            );
+                        }
+                    }
+                } else {
+                    http_response_code(401);
+                    echo json_encode(
+                        array('message' => 'U heeft geen rechten om voorstellingen op te halen.')
+                    );
+                }
+                break;
 
 
+            case 'POST':
+                if ($apikey->api_level > 1) {
+                    $voorstelling = new Voorstelling($db);
 
-	case 'PUT':
-		//if level 3 of hoger
-		$voorstelling = new Voorstelling( $db );
-		
-		
+                    $data = json_decode(file_get_contents("php://input"));
 
-		$data = json_decode( file_get_contents( "php://input" ) );
+                    $voorstelling->voorstellingNummer = $data->voorstellingNummer;
+                    $voorstelling->voorstellingTicket = $data->voorstellingTicket;
+                    $voorstelling->voorstellingZaal = $data->voorstellingZaal;
+                    $voorstelling->voorstellingFilm = $data->voorstellingFilm;
+                    $voorstelling->voorstellingDuur = $data->voorstellingDuur;
 
-		$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-		$voorstelling->voorstellingNummer = $data->voorstellingNummer;
-		$voorstelling->voorstellingTicket = $data->voorstellingTicket;
-		$voorstelling->voorstellingZaal = $data->voorstellingZaal;
-		$voorstelling->voorstellingFilm = $data->voorstellingFilm;
-		$voorstelling->voorstellingDuur = $data->voorstellingDuur;
-
-		if ( $voorstelling->update() ) {
-			http_response_code( 200 );
-
-			echo json_encode( array( 'message' => 'Voorstelling geupdated.' ) );
-		} else {
-			http_response_code( 503 );
-
-			echo json_encode(
-				array( 'message' => 'Voorstelling kan niet geupdate worden.' )
-			);
-		}
-
-		break;
-
-	case 'DELETE':
-		//if level 4 of hoger
-		$voorstelling = new Voorstelling( $db );
-
-		$voorstelling->id = isset( $_GET[ 'id' ] ) ? $_GET[ 'id' ] : die();
-
-		if ( $voorstelling->delete() ) {
-			http_response_code( 200 );
-
-			echo json_encode(
-				array( 'message' => 'Voorstelling verwijderd' )
-			);
-		} else {
-			http_response_code( 503 );
-
-			echo json_encode(
-				array( 'message' => 'Voorstelling kan niet verwijderd worden' )
-			);
-		}
+                    if ($voorstelling->create()) {
+                        echo json_encode(
+                            array('message' => 'Voorstelling aangemaakt')
+                        );
+                    } else {
+                        echo json_encode(
+                            array('message' => 'Voorstelling kan niet aangemaakt worden.')
+                        );
+                    }
+                } else {
+                    http_response_code(401);
+                    echo json_encode(
+                        array('message' => 'U heeft geen rechten om een voorstelling aan te maken.')
+                    );
+                }
+                break;
 
 
-		break;
-}
+            case 'PUT':
+                if ($apikey->api_level > 2) {
+                    $voorstelling = new Voorstelling($db);
+
+
+                    $data = json_decode(file_get_contents("php://input"));
+
+                    $voorstelling->id = isset($_GET['id']) ? $_GET['id'] : die();
+                    $voorstelling->voorstellingNummer = $data->voorstellingNummer;
+                    $voorstelling->voorstellingTicket = $data->voorstellingTicket;
+                    $voorstelling->voorstellingZaal = $data->voorstellingZaal;
+                    $voorstelling->voorstellingFilm = $data->voorstellingFilm;
+                    $voorstelling->voorstellingDuur = $data->voorstellingDuur;
+
+                    if ($voorstelling->update()) {
+                        http_response_code(200);
+
+                        echo json_encode(array('message' => 'Voorstelling geupdated.'));
+                    } else {
+                        http_response_code(503);
+
+                        echo json_encode(
+                            array('message' => 'Voorstelling kan niet geupdate worden.')
+                        );
+                    }
+                } else {
+                    http_response_code(401);
+
+                    echo json_encode(
+                        array('message' => 'U heeft geen rechten om een voorstelling te bewerken.')
+                    );
+                }
+
+                break;
+
+            case 'DELETE':
+                if ($apikey->api_level > 3) {
+                    $voorstelling = new Voorstelling($db);
+
+                    $voorstelling->id = isset($_GET['id']) ? $_GET['id'] : die();
+
+                    if ($voorstelling->delete()) {
+                        http_response_code(200);
+
+                        echo json_encode(
+                            array('message' => 'Voorstelling verwijderd')
+                        );
+                    } else {
+                        http_response_code(503);
+
+                        echo json_encode(
+                            array('message' => 'Voorstelling kan niet verwijderd worden')
+                        );
+                    }
+                } else {
+                    http_response_code(401);
+
+                    echo json_encode(
+                        array('message' => 'U heeft geen rechten om een voorstelling te verwijderen.')
+                    );
+                }
+
+
+                break;
+        }
+    } else {
+        echo json_encode(array('message' => 'Het verzoek komt niet van een geldig domein!'));
+    }
 } else {
-		echo json_encode( array( 'message' => 'Het verzoek komt niet van een geldig domein!' ) );
-	}
-} else {
-	echo json_encode( array( 'message' => 'Geen geldige API sleutel opgegeven!' ) );
+    echo json_encode(array('message' => 'Geen geldige API sleutel opgegeven!'));
 }

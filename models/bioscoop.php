@@ -18,8 +18,9 @@ class Bioscoop {
     // Get Bioscoop
     public function read() {
         // Create query
-        $query = 'SELECT *
-        FROM '.$this->table;
+        $query = 'SELECT * FROM '.$this->table.' as b
+		INNER JOIN bioscooplocatie as l ON b.bioscoopLocatie = l.id
+		INNER JOIN bioscoopzalen as z ON b.bioscoopZaal = z.id';
 
         // Prepared statement
         $stmt = $this->conn->prepare($query);
@@ -27,6 +28,12 @@ class Bioscoop {
         $stmt->execute();
 
         return $stmt;
+//        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+//
+//        $this->id = $row['id'];
+//        $this->bioscoopLocatie = $row['bioscoopLocatie'];
+//        $this->bioscoopZaal = $row['bioscoopZaal'];
+//        $this->bioscoopAantalPersoneel = $row['bioscoopAantalPersoneel'];
     }
 
     //get single bioscoop
